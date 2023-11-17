@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>Devices List</title>
+  <style>
+    body {
+      padding: 20px;
+    }
+
+    table {
+      margin-top: 20px;
+    }
+
+    #loadingSpinner {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Devices List</h1>
+    <div class="options">
+      <label><input type="checkbox" class="column-checkbox" data-column="0" checked>Name</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="1" checked>Ping</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="2" checked>Origin IP</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="3" checked>Virtual IPv4</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="4" checked>Virtual IPv6</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="5" checked>Last Seen</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="6" checked>Device Type</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="7" checked>Model</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="8" checked>Version</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="9" checked>Updated</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="10" checked>Created</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="11" checked>OS Version</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="12" checked>Manufacturer</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="13" checked>Gateway Device ID</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="14" checked>Serial Number</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="15" checked>Mac Address</label>
+      <label><input type="checkbox" class="column-checkbox" data-column="16" checked>Email</label>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th>Name</th>
+            <th>Ping</th>
+            <th>Origin IP</th>
+            <th>Virtual IPv4</th>
+            <th>Virtual IPv6</th>
+            <th>Last Seen</th>
+            <th>Device Type</th>
+            <th>Model</th>
+            <th>Version</th>
+            <th>Updated</th>
+            <th>Created</th>
+            <th>OS Version</th>
+            <th>Manufacturer</th>
+            <th>Gateway Device ID</th>
+            <th>Serial Number</th>
+            <th>Mac Address</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody id="deviceTableBody">
+        </tbody>
+      </table>
+      <div id="loadingSpinner">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Add this script block at the end of your HTML body -->
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const checkboxes = document.querySelectorAll('.column-checkbox');
+      const tableHeaders = document.querySelectorAll('.table th');
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+          const columnIndex = this.dataset.column;
+          const displayStyle = this.checked ? 'table-cell' : 'none';
+
+          // Update the visibility of the corresponding table header and cells in the body
+          tableHeaders[columnIndex].style.display = displayStyle;
+          document.querySelectorAll(`.table tbody tr td:nth-child(${parseInt(columnIndex) + 1})`).forEach(cell => {
+            cell.style.display = displayStyle;
+          });
+        });
+      });
+    });
+
+    // Define an asynchronous function to make the fetch request
+    async function fetchData() {
+      try {
+        // Make the GET request using fetch
+        const response = await fetch("http://{{ host }}:{{ port }}/api/v1/devices");
+
+        // Check if the response status is OK (200)
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse the JSON in the response
+        const jsonResponse = await response.json();
+
+        // Handle the JSON response
+        return jsonResponse.result
+
+        // Or perform further operations with the data
+        // ...
+      } catch (error) {
+        // Handle any errors that occurred during the fetch
+        console.error('Fetch error:', error);
+      }
+    }
+
+    async function appendRow(data) {
+      // Get the table body
+      var tableBody = document.getElementById('deviceTableBody');
+
+      // Create a new row
+      var newRow = document.createElement('tr');
+
+      // Loop through the data array and create table cells
+      for (var i = 0; i < data.length; i++) {
+        var cell = document.createElement('td');
+        cell.appendChild(document.createTextNode(data[i]));
+        newRow.appendChild(cell);
+      }
+
+      // Append the new row to the table body
+      tableBody.appendChild(newRow);
+    }
+
+    async function fillTable(result) {
+      result = await result;
+      console.log(result);
+      for (let i = 0; i < result.length; i++) {
+        appendRow([
+          result[i].name,
+          result[i].ping,
+          result[i].ip,
+          result[i].vipv4,
+          result[i].vipv6,
+          result[i].last_seen,
+          result[i].device_type,
+          result[i].model,
+          result[i].version,
+          result[i].updated,
+          result[i].created,
+          result[i].os_version,
+          result[i].manufacturer,
+          result[i].gateway_device_id,
+          result[i].serial_number,
+          result[i].mac_address,
+          result[i].user.email,
+        ]);
+      }
+
+      // Hide loading spinner after data is loaded
+      loadingSpinner.style.display = 'none';
+    }
+
+    fillTable(fetchData());
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

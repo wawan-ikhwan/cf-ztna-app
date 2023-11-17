@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+*__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv
+*.env
+
+# IDE files
+*.vscode
+*.sublime-project
+*.sublime-workspace
+*.pycharm
+*.pyproject
+*.idea
+*.DS_Store
+
+# Compiled C extension
+*.so
+
+# Miscellaneous
+*.log
+*.pyc
+*.swp
+*.DS_Store
+*.db
+*.sqlite3
+*.sql
+*.zip
+*.gz
+*.tar
+*.tar.gz
+*.rar
+
+*foo*
