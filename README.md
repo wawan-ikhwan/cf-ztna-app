@@ -38,10 +38,10 @@ Clone the repository and install the dependencies:
 ```bash
 git clone https://github.com/wawan-ikhwan/cf-ztna-app.git
 cd cf-ztna-app
-python -m venv venv
+python -m venv .venv
 # On Windows
-venv\Scripts\activate
+.venv\Scripts\activate
 # On macOS/Linux
-source venv/bin/activate
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
