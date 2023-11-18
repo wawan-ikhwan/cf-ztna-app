@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 isEnvLoaded = load_dotenv('.env')
 print('Environment Load:', isEnvLoaded)
 if not isEnvLoaded:
-  raise Exception('Pastikan ada file .env (dotenv) dan bukannya .example.env !')
+  raise Exception('Pastikan ada file .env (dotenv) dan bukannya env.example !')
 
 import uvicorn
 
